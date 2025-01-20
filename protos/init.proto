@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package init;
+option go_package = "github.com/arndt-s/spiffe-github-actions/protos/main";
+
+service InitAPI {
+    rpc Init(InitRequest) returns (InitResponse);
+}
+
+message InitRequest {
+    string id_token = 1;
+}
+
+message InitResponse {
+    string spiffe_id = 2;
+}

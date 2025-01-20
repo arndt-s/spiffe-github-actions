@@ -1,0 +1,12 @@
+name: 'Hello World'
+description: 'Greet someone and record the time'
+inputs:
+  id-token: 
+    description: 'ID token of the action run'
+    required: true
+outputs:
+  spiffeid: 
+    description: 'The SPIFFE-ID of your action'
+runs:
+  using: 'node20'
+  main: 'action/dist/index.js'

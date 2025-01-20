@@ -23,6 +23,7 @@ func main() {
 
 	reflection.Register(s)
 	workload.RegisterSpiffeWorkloadAPIServer(s, a)
+	RegisterInitAPIServer(s, a)
 
 	path := os.Getenv("SPIFFE_ENDPOINT_SOCKET")
 	if path == "" {
@@ -43,6 +44,7 @@ func main() {
 
 type agent struct {
 	signer jose.Signer
+	UnimplementedInitAPIServer
 	workload.UnimplementedSpiffeWorkloadAPIServer
 }
 
@@ -55,6 +57,12 @@ func newAgent() (*agent, error) {
 
 	return &agent{
 		signer: signer,
+	}, nil
+}
+
+func (a *agent) Init(ctx context.Context, req *InitRequest) (*InitResponse, error) {
+	return &InitResponse{
+		SpiffeId: "spiffe://example.org/agent",
 	}, nil
 }
 
