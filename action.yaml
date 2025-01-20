@@ -4,6 +4,9 @@ inputs:
   id-token: 
     description: 'ID token of the action run'
     required: true
+  spiffe-workload-endpoint: 
+    description: 'SPIFFE Workload API endpoint'
+    required: true
 outputs:
   spiffeid: 
     description: 'The SPIFFE-ID of your action'

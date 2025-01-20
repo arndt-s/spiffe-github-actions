@@ -52688,7 +52688,8 @@ __nccwpck_require__.r(__webpack_exports__);
 
 try {
     const idToken = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput('id-token');
-    const client = new _init__WEBPACK_IMPORTED_MODULE_1__/* .init */ .T.ProcessIDAttestationAPIClient("unix:/tmp/spiffe/workload.sock", _grpc_grpc_js__WEBPACK_IMPORTED_MODULE_2__/* .credentials */ .z3.createInsecure());
+    const workloadEndpoint = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput('spiffe-workload-endpoint');
+    const client = new _init__WEBPACK_IMPORTED_MODULE_1__/* .init */ .T.ProcessIDAttestationAPIClient(workloadEndpoint, _grpc_grpc_js__WEBPACK_IMPORTED_MODULE_2__/* .credentials */ .z3.createInsecure());
     const initRequest = new _init__WEBPACK_IMPORTED_MODULE_1__/* .init */ .T.InitRequest({ id_token: idToken });
     const response = await new Promise((resolve, reject) => {
         client.Init(initRequest, (err, response) => {
@@ -52700,7 +52701,7 @@ try {
             }
         });
     });
-    _actions_core__WEBPACK_IMPORTED_MODULE_0__.setOutput('spiffe_id', response.spiffe_id);
+    _actions_core__WEBPACK_IMPORTED_MODULE_0__.setOutput('spiffeid', response.spiffe_id);
 }
 catch (error) {
     _actions_core__WEBPACK_IMPORTED_MODULE_0__.setFailed(error.message);
