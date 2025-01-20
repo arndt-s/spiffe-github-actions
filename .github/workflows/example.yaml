@@ -1,0 +1,39 @@
+name: SPIFFE example
+on:
+  workflow_dispatch:
+
+jobs:
+  uds-example:
+    runs-on: ubuntu-latest
+    services:
+      spiffe-agent:
+        image: ghcr.io/arndt-s/spiffe-github-actions-agent:main
+        env:
+          SPIFFE_ENDPOINT_SOCKET: /tmp/spiffe/workload.sock
+        volumes:
+          - /tmp/spiffe:/tmp/spiffe
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      - name: Install grpcurl
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y curl
+          curl -L https://github.com/fullstorydev/grpcurl/releases/download/v1.8.7/grpcurl_1.8.7_linux_x86_64.tar.gz -o grpcurl.tar.gz
+          tar -xzf grpcurl.tar.gz
+          sudo mv grpcurl /usr/local/bin/
+
+      - name: Verify UDS
+        run: |
+          if [ -S /tmp/spiffe/workload.sock ]; then
+            echo "UDS is mounted successfully."
+          else
+            echo "UDS is not mounted."
+            exit 1
+          fi
+
+      - name: Call MintJWTSvid
+        run: |
+          result=$(sudo grpcurl -plaintext -unix /tmp/spiffe/workload.sock SpiffeWorkloadAPI/FetchJWTSVID)
+          echo $result | jq -r .svids[0].svid | jq -R 'split(".") | .[0],.[1] | @base64d | fromjson'
