@@ -15,6 +15,8 @@ try {
       } else {
         resolve(response);
       }
+    }, {
+      'grpc.client_channel_factory': workloadEndpoint
     });
   });
 
