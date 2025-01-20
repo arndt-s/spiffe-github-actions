@@ -1,4 +1,4 @@
-name: SPIFFE example
+name: SPIFFE example - UDS
 on:
   workflow_dispatch:
 

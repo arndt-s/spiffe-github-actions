@@ -1,0 +1,25 @@
+name: SPIFFE example - Init
+on:
+  workflow_dispatch:
+
+jobs:
+  uds-example:
+    runs-on: ubuntu-latest
+    services:
+      spiffe-agent:
+        image: ghcr.io/arndt-s/spiffe-github-actions-agent:main
+        env:
+          SPIFFE_ENDPOINT_SOCKET: /tmp/spiffe/workload.sock
+        volumes:
+          - /tmp/spiffe:/tmp/spiffe
+    permissions:
+      id-token: write
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      - name: Initialize SPIFFE
+        id: init
+        uses: arndt-s/spiffe-github-actions@main
+        with:
+          id-token: ${{ secrets.GITHUB_TOKEN }}
