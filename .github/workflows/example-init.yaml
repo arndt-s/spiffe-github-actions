@@ -13,6 +13,7 @@ jobs:
         volumes:
           - /tmp/spiffe:/tmp/spiffe
     permissions:
+      contents: read
       id-token: write
     steps:
       - name: Check out repository code
