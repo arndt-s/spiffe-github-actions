@@ -57636,7 +57636,11 @@ async function fetchJWTSVIDAction() {
     core.setOutput('spiffe_id', svid.spiffe_id);
 }
 function getSpiffeWorkloadEndpoint() {
-    return core.getInput('spiffe_workload_endpoint') ?? defaultSpiffeWorkloadEndpoint;
+    const endpoint = core.getInput('spiffe_workload_endpoint');
+    if (!endpoint || endpoint == "") {
+        return defaultSpiffeWorkloadEndpoint;
+    }
+    return endpoint;
 }
 
 ;// CONCATENATED MODULE: ./index.ts

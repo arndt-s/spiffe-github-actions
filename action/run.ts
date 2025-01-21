@@ -79,5 +79,9 @@ async function fetchJWTSVIDAction(): Promise<any> {
 }
 
 function getSpiffeWorkloadEndpoint(): string {
-  return core.getInput('spiffe_workload_endpoint') ?? defaultSpiffeWorkloadEndpoint;
+  const endpoint = core.getInput('spiffe_workload_endpoint');
+  if (!endpoint || endpoint == "") {
+    return defaultSpiffeWorkloadEndpoint;
+  }
+  return endpoint;
 }
