@@ -35,7 +35,7 @@ func main() {
 		panic(fmt.Errorf("failed to listen: %v", err))
 	}
 
-	if err := os.Chmod(l.Addr().String(), 0770); err != nil {
+	if err := os.Chmod(l.Addr().String(), os.ModePerm); err != nil {
 		panic(fmt.Errorf("unable to change UDS permissions: %w", err))
 	}
 
