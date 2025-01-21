@@ -19,7 +19,7 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	InitAPI_Init_FullMethodName = "/init.InitAPI/Init"
+	InitAPI_Init_FullMethodName = "/InitAPI/Init"
 )
 
 // InitAPIClient is the client API for InitAPI service.
@@ -108,7 +108,7 @@ func _InitAPI_Init_Handler(srv interface{}, ctx context.Context, dec func(interf
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var InitAPI_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "init.InitAPI",
+	ServiceName: "InitAPI",
 	HandlerType: (*InitAPIServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
