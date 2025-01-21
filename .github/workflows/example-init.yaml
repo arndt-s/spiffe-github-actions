@@ -20,6 +20,14 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v4
 
+      - name: wait 10s
+        run: sleep 10
+
+      - name: check permissions
+        run: |
+          ls -l /tmp/spiffe/
+          id
+
       - name: Initialize SPIFFE
         id: init
         uses: arndt-s/spiffe-github-actions@main
