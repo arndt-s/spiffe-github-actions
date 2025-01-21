@@ -1,4 +1,4 @@
-name: SPIFFE example - Init
+name: SPIFFE example - SPIFFE Endpoint Socket
 on:
   workflow_dispatch:
 
@@ -9,9 +9,9 @@ jobs:
       spiffe-agent:
         image: ghcr.io/arndt-s/spiffe-github-actions-agent:main
         env:
-          SPIFFE_ENDPOINT_SOCKET: /tmp/spiffe/workload.sock
+          SPIFFE_ENDPOINT_SOCKET: /spiffe/workload.sock
         volumes:
-          - /tmp/spiffe:/tmp/spiffe
+          - /spiffe:/spiffe
     permissions:
       contents: read
       id-token: write
@@ -20,14 +20,20 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v4
 
-      - name: check permissions
-        run: |
-          ls -l /tmp/spiffe/
-          id
-
       - name: Initialize SPIFFE
         id: init
         uses: arndt-s/spiffe-github-actions@main
         with:
-          id-token: ${{ secrets.GITHUB_TOKEN }}
-          spiffe-workload-endpoint: unix:/tmp/spiffe/workload.sock
+          action: 'init'
+
+      - name: Get JWT SVID
+        id: init
+        uses: arndt-s/spiffe-github-actions@main
+        with:
+          action: 'fetch-jwt-svid'
+
+      - name: Print JWT SVID
+        run: echo ${{ steps.init.outputs.jwt_svid }}
+
+      - name: Print JWT SVID claims
+        run: echo ${{ steps.init.outputs.jwt_svid }} | jq -R 'split(".") | .[0],.[1] | @base64d | fromjson'

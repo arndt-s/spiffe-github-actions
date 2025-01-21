@@ -6,7 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "ncc build index.ts --license licenses.txt",
-    "generate": "protoc -I=../protos --ts_out=. init.proto"
+    "generate": "npm run generate-init & npm run generate-workload",
+    "generate-init": "protoc -I=../protos --ts_out=. init.proto",
+    "generate-workload": "protoc -I=../protos --ts_out=. workload.proto"
   },
   "keywords": [],
   "author": "",

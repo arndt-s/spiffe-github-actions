@@ -1,15 +1,24 @@
 name: 'Hello World'
 description: 'Greet someone and record the time'
 inputs:
-  id-token: 
-    description: 'ID token of the action run'
+  action:
+    description: 'The action to execute'
     required: true
-  spiffe-workload-endpoint: 
+  spiffe_workload_endpoint: 
     description: 'SPIFFE Workload API endpoint'
-    required: true
+    required: false
+  audience:
+    description: 'Audience to request a JWT-SVID for. If multiple audiences are required, separate them with a comma.'
+    required: false
+    default: 'spiffe://example.org'
+  spiffe_id:
+    description: 'The SPIFFE-ID to request an SVID for'
+    required: false
 outputs:
-  spiffeid: 
+  spiffe_id: 
     description: 'The SPIFFE-ID of your action'
+  jwt_svid:
+    description: 'The requested JWT SVID'
 runs:
   using: 'node20'
   main: 'action/dist/index.js'
