@@ -9,7 +9,7 @@ import * as grpc from '@grpc/grpc-js';
  */
 export async function run(): Promise<void> {
     try {
-        const idToken = core.getInput('id-token');
+        const idToken = await core.getIDToken();
         const workloadEndpoint = core.getInput('spiffe-workload-endpoint');
         
         const spiffeId = await initSidecar(workloadEndpoint, idToken);
