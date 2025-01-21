@@ -9,7 +9,9 @@ import (
 
 	"github.com/spiffe/go-spiffe/proto/spiffe/workload"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/reflection"
+	status "google.golang.org/grpc/status"
 	"gopkg.in/square/go-jose.v2"
 	"gopkg.in/square/go-jose.v2/jwt"
 )
@@ -47,7 +49,10 @@ func main() {
 }
 
 type agent struct {
-	signer jose.Signer
+	signer   jose.Signer
+	idToken  string
+	spiffeId string
+
 	UnimplementedInitAPIServer
 	workload.UnimplementedSpiffeWorkloadAPIServer
 }
@@ -65,16 +70,27 @@ func newAgent() (*agent, error) {
 }
 
 func (a *agent) Init(ctx context.Context, req *InitRequest) (*InitResponse, error) {
+	spiffeId, err := constructSpiffeID(req.IdToken)
+	if err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, "failed to construct spiffe id: %v", err)
+	}
+
+	a.idToken = req.IdToken
+	a.spiffeId = spiffeId
 	return &InitResponse{
-		SpiffeId: "spiffe://example.org/agent",
+		SpiffeId: spiffeId,
 	}, nil
 }
 
 func (a *agent) FetchJWTSVID(ctx context.Context, req *workload.JWTSVIDRequest) (*workload.JWTSVIDResponse, error) {
+	if a.idToken == "" || a.spiffeId == "" {
+		return nil, status.Errorf(codes.FailedPrecondition, "id token is not set, please run Init first")
+	}
+
 	claims := jwt.Claims{
 		Expiry:  jwt.NewNumericDate(time.Now().Add(time.Hour * 1)),
 		Issuer:  "your-issuer",
-		Subject: "your-subject",
+		Subject: a.spiffeId,
 	}
 
 	raw, err := jwt.Signed(a.signer).Claims(claims).CompactSerialize()
@@ -86,8 +102,24 @@ func (a *agent) FetchJWTSVID(ctx context.Context, req *workload.JWTSVIDRequest) 
 		Svids: []*workload.JWTSVID{
 			{
 				Svid:     raw,
-				SpiffeId: "",
+				SpiffeId: a.spiffeId,
 			},
 		},
 	}, nil
+}
+
+func constructSpiffeID(idToken string) (string, error) {
+	jwt, err := jwt.ParseSigned(idToken)
+	if err != nil {
+		return "", fmt.Errorf("failed to parse id token: %v", err)
+	}
+
+	var claims struct {
+		Subject string `json:"sub"`
+	}
+	if err := jwt.UnsafeClaimsWithoutVerification(&claims); err != nil {
+		return "", fmt.Errorf("failed to extract claims from id token: %v", err)
+	}
+
+	return fmt.Sprintf("spiffe://example.org/%s", claims.Subject), nil
 }
