@@ -20,9 +20,6 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v4
 
-      - name: gh token claims
-        run: echo ${{ secrets.GITHUB_TOKEN }} | jq -R 'split(".") | .[0],.[1] | @base64d | fromjson'
-
       - name: check permissions
         run: |
           ls -l /tmp/spiffe/
