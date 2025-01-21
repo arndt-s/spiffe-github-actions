@@ -35,5 +35,5 @@ jobs:
 
       - name: Call MintJWTSvid
         run: |
-          result=$(sudo grpcurl -plaintext -unix /tmp/spiffe/workload.sock SpiffeWorkloadAPI/FetchJWTSVID)
+          result=$(grpcurl -plaintext -unix /tmp/spiffe/workload.sock SpiffeWorkloadAPI/FetchJWTSVID)
           echo $result | jq -r .svids[0].svid | jq -R 'split(".") | .[0],.[1] | @base64d | fromjson'
