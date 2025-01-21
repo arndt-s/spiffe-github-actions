@@ -25,4 +25,4 @@ jobs:
         uses: arndt-s/spiffe-github-actions@main
         with:
           id-token: ${{ secrets.GITHUB_TOKEN }}
-          spiffe-workload-endpoint: unix:///tmp/spiffe/workload.sock
+          spiffe-workload-endpoint: unix:/tmp/spiffe/workload.sock

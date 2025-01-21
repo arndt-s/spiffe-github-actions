@@ -164,10 +164,10 @@ export namespace init {
         (message: P, metadata: grpc_1.Metadata, options?: grpc_1.CallOptions): Promise<R>;
         (message: P, options?: grpc_1.CallOptions): Promise<R>;
     }
-    export abstract class UnimplementedProcessIDAttestationAPIService {
+    export abstract class UnimplementedInitAPIService {
         static definition = {
             Init: {
-                path: "/init.ProcessIDAttestationAPI/Init",
+                path: "/init.InitAPI/Init",
                 requestStream: false,
                 responseStream: false,
                 requestSerialize: (message: InitRequest) => Buffer.from(message.serialize()),
@@ -179,7 +179,7 @@ export namespace init {
         [method: string]: grpc_1.UntypedHandleCall;
         abstract Init(call: grpc_1.ServerUnaryCall<InitRequest, InitResponse>, callback: grpc_1.sendUnaryData<InitResponse>): void;
     }
-    export class ProcessIDAttestationAPIClient extends grpc_1.makeGenericClientConstructor(UnimplementedProcessIDAttestationAPIService.definition, "ProcessIDAttestationAPI", {}) {
+    export class InitAPIClient extends grpc_1.makeGenericClientConstructor(UnimplementedInitAPIService.definition, "InitAPI", {}) {
         constructor(address: string, credentials: grpc_1.ChannelCredentials, options?: Partial<grpc_1.ChannelOptions>) {
             super(address, credentials, options);
         }

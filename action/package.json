@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "ncc build index.ts --license licenses.txt"
+    "build": "ncc build index.ts --license licenses.txt",
+    "generate": "protoc -I=../protos --ts_out=. init.proto"
   },
   "keywords": [],
   "author": "",
