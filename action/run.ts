@@ -11,12 +11,10 @@ export async function run(): Promise<void> {
     try {
         const idToken = await core.getIDToken();
         const workloadEndpoint = core.getInput('spiffe-workload-endpoint');
-
-        core.setOutput('claims', idToken.split('.')[1])
         
-        //const spiffeId = await initSidecar(workloadEndpoint, idToken);
+        const spiffeId = await initSidecar(workloadEndpoint, idToken);
       
-        core.setOutput('spiffeid', "foo");
+        core.setOutput('spiffeid', spiffeId);
       } catch (error) {
         core.setFailed(error.message);
       }

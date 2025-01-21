@@ -56256,7 +56256,7 @@ var init;
  */
 async function run() {
     try {
-        const idToken = core.getInput('id-token');
+        const idToken = await core.getIDToken();
         const workloadEndpoint = core.getInput('spiffe-workload-endpoint');
         const spiffeId = await initSidecar(workloadEndpoint, idToken);
         core.setOutput('spiffeid', spiffeId);
