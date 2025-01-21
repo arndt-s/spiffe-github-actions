@@ -27,13 +27,13 @@ jobs:
           action: 'init'
 
       - name: Get JWT SVID
-        id: init
+        id: fetch-jwt-svid
         uses: arndt-s/spiffe-github-actions@main
         with:
           action: 'fetch-jwt-svid'
 
       - name: Print JWT SVID
-        run: echo ${{ steps.init.outputs.jwt_svid }}
+        run: echo ${{ steps.fetch-jwt-svid.outputs.jwt_svid }}
 
       - name: Print JWT SVID claims
-        run: echo ${{ steps.init.outputs.jwt_svid }} | jq -R 'split(".") | .[0],.[1] | @base64d | fromjson'
+        run: echo ${{ steps.fetch-jwt-svid.outputs.jwt_svid }} | jq -R 'split(".") | .[0],.[1] | @base64d | fromjson'
