@@ -20,20 +20,38 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v4
 
+      # this action passes the ID token to the service container, allowing to connect to UDS without credential
       - name: Initialize SPIFFE
         id: init
         uses: arndt-s/spiffe-github-actions@main
         with:
           action: 'init'
 
+      # this action uses plain SPIFFE, nothing extra
       - name: Get JWT SVID
         id: fetch-jwt-svid
         uses: arndt-s/spiffe-github-actions@main
         with:
           action: 'fetch-jwt-svid'
 
+      # JWT-SVIDs are added as credentials and automatically redacted.
       - name: Print JWT SVID
         run: echo ${{ steps.fetch-jwt-svid.outputs.jwt_svid }}
 
+      # JWT SVID claims contain data from ID token
       - name: Print JWT SVID claims
         run: echo ${{ steps.fetch-jwt-svid.outputs.jwt_svid }} | jq -R 'split(".") | .[0],.[1] | @base64d | fromjson'
+
+      - name: Install grpcurl
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y curl
+          curl -L https://github.com/fullstorydev/grpcurl/releases/download/v1.8.7/grpcurl_1.8.7_linux_x86_64.tar.gz -o grpcurl.tar.gz
+          tar -xzf grpcurl.tar.gz
+          sudo mv grpcurl /usr/local/bin/
+
+      # Any SPIFFE-aware piece of code can use the SPIFFE endpoint socket, e.g. integration tests, CLIs, etc.
+      - name: Call FetchJWTSVID directly
+        run: |
+          result=$(sudo grpcurl -plaintext -unix /spiffe/workload.sock SpiffeWorkloadAPI/FetchJWTSVID)
+          echo $result | jq -r .svids[0].svid | jq -R 'split(".") | .[0],.[1] | @base64d | fromjson'
