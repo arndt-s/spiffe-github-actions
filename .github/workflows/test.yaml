@@ -1,0 +1,20 @@
+name: Test
+on:
+  push: {}
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print variables
+        shell: bash
+        run: |
+          echo $ACTIONS_ID_TOKEN_REQUEST_URL
+          echo $ACTIONS_ID_TOKEN_REQUEST_TOKEN
+      
+      - name: Try to decode claims
+        shell: bash
+        run: |
+          echo $ACTIONS_ID_TOKEN_REQUEST_TOKEN | jq -R 'split(".") | .[0],.[1] | @base64d | fromjson'
+
+
